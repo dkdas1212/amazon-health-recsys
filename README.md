@@ -109,6 +109,8 @@ GET /user/A3OXHLG6DIBRW8/history
 GET /stats
 ```
 ## 📁 Project Structure
+
+```
 amazon-health-recsys/
 ├── kafka/
 │   ├── producer.py          # Simulates user clickstream
@@ -139,6 +141,7 @@ amazon-health-recsys/
 ├── docker-compose.yml
 ├── Dockerfile
 └── requirements.txt
+``` 
 
 ## 🎯 Key Results
 - Improved SVD RMSE from **0.86 → 0.73** through hyperparameter tuning
