@@ -2,21 +2,25 @@
 
 An end-to-end ML recommendation system built on 281K+ Amazon reviews with a full data engineering pipeline.
 
-## 🏗️ Architecture Amazon Reviews Dataset
-↓
-Apache Kafka (real-time clickstream)
-↓
-Apache Airflow (pipeline orchestration)
-↓
-PySpark (distributed feature engineering)
-↓
-PostgreSQL + dbt (data modeling)
-↓
+## 🏗️ Architecture
+
+```
+Amazon Reviews Dataset
+        ↓
+  Apache Kafka (real-time clickstream)
+        ↓
+  Apache Airflow (pipeline orchestration)
+        ↓
+   PySpark (distributed feature engineering)
+        ↓
+   PostgreSQL + dbt (data modeling)
+        ↓
 SVD + TF-IDF + Hybrid ML Models (RMSE: 0.73)
-↓
-FastAPI (REST API) + Redis (caching)
-↓
-Streamlit Dashboard (interactive UI)## 📊 Dataset
+        ↓
+   FastAPI (REST API) + caching
+        ↓
+  Streamlit Dashboard (interactive UI)
+``` 📊 Dataset
 - **Source:** Amazon Health & Personal Care Reviews
 - **Size:** 281,642 reviews (cleaned from 567K raw)
 - **Users:** 46,523 unique users
@@ -139,6 +143,9 @@ amazon-health-recsys/
 - Real-time clickstream pipeline streaming **10K+ events/day**
 - API response time under **100ms** with caching
 - Matrix sparsity of **99.96%** handled via SVD factorization
+- **3 Airflow DAGs** automating daily ingestion, hourly features, weekly retraining
+- **4 dbt models** transforming raw data into ML-ready features
+- **PySpark** processing 281K reviews across 46K users and 15K products
 
 ## 👤 Author
 **Dibya Kanti Das**
