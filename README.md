@@ -25,13 +25,12 @@ Streamlit Dashboard (interactive UI)## 📊 Dataset
 
 ## 🤖 ML Models
 
-## 🤖 ML Models
-
 | Model | Metric | Score |
 |---|---|---|
 | SVD Collaborative Filtering | RMSE | 0.73 |
 | TF-IDF Content-Based | Avg Cosine Similarity | 0.73 |
 | Hybrid Model | Blended Score | 70% CF + 30% CB |
+
 ## 🛠️ Tech Stack
 
 | Layer | Tools |
