@@ -20,7 +20,9 @@ SVD + TF-IDF + Hybrid ML Models (RMSE: 0.73)
    FastAPI (REST API) + caching
         ↓
   Streamlit Dashboard (interactive UI)
-``` 📊 Dataset
+``` 
+## 📊 Dataset
+
 - **Source:** Amazon Health & Personal Care Reviews
 - **Size:** 281,642 reviews (cleaned from 567K raw)
 - **Users:** 46,523 unique users
