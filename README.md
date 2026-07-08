@@ -7,19 +7,19 @@ An end-to-end ML recommendation system built on 281K+ Amazon reviews with a full
 ```
 Amazon Reviews Dataset
         ↓
-  Apache Kafka (real-time clickstream)
+Apache Kafka (real-time clickstream)
         ↓
-  Apache Airflow (pipeline orchestration)
+Apache Airflow (pipeline orchestration)
         ↓
-   PySpark (distributed feature engineering)
+PySpark (distributed feature engineering)
         ↓
-   PostgreSQL + dbt (data modeling)
+PostgreSQL + dbt (data modeling)
         ↓
 SVD + TF-IDF + Hybrid ML Models (RMSE: 0.73)
         ↓
-   FastAPI (REST API) + caching
+FastAPI (REST API) + caching
         ↓
-  Streamlit Dashboard (interactive UI)
+Streamlit Dashboard (interactive UI)
 ``` 
 ## 📊 Dataset
 
