@@ -81,10 +81,50 @@ def get_popular_products(n=10):
             "cf_score": round(row['avg_rating'], 4),
             "cb_score": round(row['review_count'] /
                              popular['review_count'].max() * 5, 4),
-            "source": "popularity"
+            "source": "popularity",
+            "sample_summary": get_sample_summary(row['product_id'])
         }
         for _, row in top.iterrows()
     ]
+
+def search_by_keyword(keywords, n=10):
+    """Search the FULL dataset (not just top recommendations) for products
+    whose reviews mention any of the given keywords, then rank matches by
+    rating + review count. This is the real category search, unlike the
+    old approach of filtering an already-narrow top-N list."""
+    pattern = '|'.join(keywords)
+    matches = df[df['summary'].str.contains(pattern, case=False, na=False)]
+    if matches.empty:
+        return []
+
+    grouped = matches.groupby('product_id').agg(
+        review_count=('rating', 'count'),
+        avg_rating=('rating', 'mean'),
+        sample_summary=('summary', 'first')
+    ).reset_index()
+
+    grouped['score'] = (
+        0.7 * grouped['avg_rating'] +
+        0.3 * (grouped['review_count'] / grouped['review_count'].max() * 5)
+    )
+    top = grouped.nlargest(n, 'score')
+    return [
+        {
+            "product_id": row['product_id'],
+            "avg_rating": round(row['avg_rating'], 2),
+            "review_count": int(row['review_count']),
+            "match_score": round(row['score'], 4),
+            "sample_summary": row['sample_summary']
+        }
+        for _, row in top.iterrows()
+    ]
+
+def get_sample_summary(product_id):
+    """Grab one representative review summary for a product, used as a
+    weak signal for category (snack/drink/meal) since there's no
+    structured category field in this dataset."""
+    reviews = df[df['product_id'] == product_id]['summary'].dropna()
+    return reviews.iloc[0] if not reviews.empty else ""
 
 def get_hybrid_recommendations(user_id, n=10):
     user_reviews = df[df['user_id'] == user_id]
@@ -129,7 +169,8 @@ def get_hybrid_recommendations(user_id, n=10):
             "hybrid_score": round(score, 4),
             "cf_score": round(cf_scores.get(pid, 3.0), 4),
             "cb_score": round(cb_scores.get(pid, 3.0), 4),
-            "source": "hybrid"
+            "source": "hybrid",
+            "sample_summary": get_sample_summary(pid)
         }
         for pid, score in top_n
     ]
@@ -192,7 +233,8 @@ def similar_products(product_id: str, n: int = 10):
             "review_count": int(
                 product_profiles[
                     product_profiles['product_id'] == pid
-                ]['review_count'].values[0])
+                ]['review_count'].values[0]),
+            "sample_summary": get_sample_summary(pid)
         }
         for pid, score in similar
     ]
@@ -233,3 +275,13 @@ def stats():
                    "TF-IDF Content Based",
                    "Hybrid (70% CF + 30% CB)"]
     }
+
+@app.get("/search")
+def search(keywords: str, n: int = 10):
+    """Search all reviews for keyword matches (comma-separated), ranked by rating.
+    Example: /search?keywords=coffee,tea,espresso&n=10"""
+    kw_list = [k.strip() for k in keywords.split(",") if k.strip()]
+    if not kw_list:
+        raise HTTPException(status_code=400, detail="Provide at least one keyword")
+    results = search_by_keyword(kw_list, n)
+    return {"keywords": kw_list, "results": results, "count": len(results)}
