@@ -17,3 +17,5 @@ models/
 spark-warehouse/
 derby.log
 airflow/logs/
+rag/.env
+rag/.env
